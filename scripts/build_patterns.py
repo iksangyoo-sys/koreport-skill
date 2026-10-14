@@ -224,7 +224,13 @@ def build_html(d):
     assert marker in tpl, "템플릿에 데이터 자리표시가 없습니다"
     assert guide_marker in tpl, "템플릿에 안내서 자리표시가 없습니다"
     guide = guide_to_html(GUIDE.read_text(encoding="utf-8"))
-    return tpl.replace(marker, payload).replace(guide_marker, guide)
+    vocab_marker = "/*__VOCAB_DATA__*/null"
+    assert vocab_marker in tpl, "템플릿에 어휘 자리표시가 없습니다"
+    v = json.loads(VOCAB.read_text(encoding="utf-8"))
+    keep = ("id", "name", "category", "domain", "desc", "slots", "words", "cautions")  # 화면에 쓰는 것만
+    slim = {"featured_by_slot": v["featured_by_slot"], "groups": [{k: g[k] for k in keep} for g in v["groups"]]}
+    vocab_payload = json.dumps(slim, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+    return tpl.replace(marker, payload).replace(guide_marker, guide).replace(vocab_marker, vocab_payload)
 
 
 VOCAB_CAT_DESC = {
@@ -291,6 +297,7 @@ def build_vocab_md(v):
     w("- **쓸 때:** 13편 공식으로 문장을 조립하면서, 빈칸에 들어갈 말을 2번 표의 묶음에서 고른다. 자료의 사실과 수치는 바꾸지 않는다.")
     w("- **고칠 때:** 같은 행동어·연결어가 한 장표에 세 번 넘게 나오면, 같은 묶음의 다른 말로 바꾼다. AI 초안의 '개선·향상·강화' 같은 일반 어휘는 보고 단계에 맞는 묶음의 말로 바꾼다.")
     w("- **진단할 때:** 밋밋한 단어, 단계에 맞지 않는 단어(결과 보고인데 '검토·추진'으로 끝남), 과장된 단어를 짚고 묶음 ID와 함께 대안을 제시한다.")
+    w("- **학습자에게 줄 때:** `assets/sentence-patterns.html`의 빈칸 아래 '이 칸에 쓸 말'과 맨 아래 '다른 말 찾기'가 이 어휘를 쓴다. 빈칸별 첫 화면 묶음은 JSON의 `featured_by_slot`에서 정한다.")
     w("- **연결어:** 단락 첫머리는 V024, 문장 속 연결은 V027, 원인은 V030, 수단은 V029에서 고른다. '그리고·또'가 반복되면 '아울러·이와 더불어'로 바꾼다.")
     w("")
     w("### 4. 어휘 전체")
@@ -370,6 +377,10 @@ def check_vocab(v):
         assert g["category"] in v["categories"], f"{g['id']}: 알 수 없는 분류 '{g['category']}'"
         assert g["words"], f"{g['id']}: 단어가 없습니다"
         assert len(g["words"]) == len(set(g["words"])), f"{g['id']}: 같은 묶음 안에 중복 단어가 있습니다"
+    gid = {g["id"]: g for g in v["groups"]}
+    for sl, ids in v.get("featured_by_slot", {}).items():
+        for i in ids:
+            assert i in gid and sl in gid[i]["slots"], f"featured_by_slot: {sl}의 {i}가 없거나 그 빈칸에 맞지 않습니다"
 
 
 def main():

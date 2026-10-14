@@ -94,6 +94,41 @@ dialog.guide::backdrop { background: rgba(15, 20, 30, .45); }
 .guide-body pre { margin: 0; background: #f5f7fa; border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; font-size: 13.5px; white-space: pre-wrap; word-break: keep-all; }
 .guide-body .copy-code { position: absolute; top: 8px; right: 8px; padding: 3px 10px; font-size: 13px; background: #fff; }
 
+/* 이 칸에 쓸 말 */
+.sg { margin-top: 10px; padding: 12px 14px; border: 1px dashed var(--line); border-radius: 10px; background: #fbfcfd; }
+.sg-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: 14px; }
+.sg-head b { color: var(--accent); }
+.sg-head span { color: var(--ink-3); font-size: 12.5px; }
+.sg-groups { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; align-items: center; }
+.sg-group { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 2px 10px; font-size: 13px; cursor: pointer; color: var(--ink-2); }
+.sg-group[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: #fff; }
+.sg-more { border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px; font-size: 13px; background: #fff; color: var(--ink-2); max-width: 100%; }
+.words { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.word { border: 1.5px solid var(--blank-line); background: var(--blank); border-radius: 8px; padding: 2px 10px; font-size: 14.5px; cursor: pointer; }
+.word:hover { background: #fff; }
+.word.hit { border-color: var(--accent); background: var(--accent-soft); font-weight: 700; }
+.sg-desc { margin: 8px 0 0; font-size: 12.5px; color: var(--ink-3); }
+.sg-desc .warn { color: #a8431a; }
+
+/* 다른 말 찾기 */
+.find summary { list-style: none; cursor: pointer; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.find summary::-webkit-details-marker { display: none; }
+.find summary b { font-size: 17px; }
+.find summary span { color: var(--ink-3); font-size: 14px; }
+.find summary::after { content: "펼치기 ▾"; margin-left: auto; color: var(--accent); font-size: 14px; font-weight: 600; }
+.find[open] summary::after { content: "접기 ▴"; }
+.find-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 14px; }
+.find-row input[type=search] { flex: 1 1 240px; border: 1.5px solid var(--line); border-radius: 8px; padding: 8px 12px; font-size: 16px; }
+.find-row input[type=search]:focus { outline: none; border-color: var(--accent); }
+.find-row label { font-size: 13px; color: var(--ink-2); }
+.fr { border-top: 1px solid var(--line); padding: 12px 0 2px; }
+.fr:first-child { border-top: 0; }
+.fr-h { font-size: 14px; }
+.fr-h b { font-size: 15px; }
+.fr-h .cat { display: inline-block; font-size: 12px; color: var(--accent); background: var(--accent-soft); border-radius: 4px; padding: 0 6px; margin: 0 4px; }
+.fr-h .d { color: var(--ink-3); }
+.find-empty { color: var(--ink-3); font-size: 14px; margin: 12px 0 0; }
+
 footer { margin-top: 24px; font-size: 12.5px; color: var(--ink-3); text-align: center; }
 .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: var(--ink); color: #fff; padding: 8px 16px; border-radius: 8px; font-size: 14px; opacity: 0; transition: opacity .2s; pointer-events: none; }
 .toast.show { opacity: 1; }
@@ -134,6 +169,7 @@ footer { margin-top: 24px; font-size: 12.5px; color: var(--ink-3); text-align: c
   <section class="step">
     <h2><span class="num" id="fillNum">3</span>빈칸을 채우세요</h2>
     <div id="madlib" class="madlib"></div>
+    <div id="sg" class="sg" aria-live="polite"></div>
     <p id="legend" class="legend"></p>
     <p id="tip" class="tip"></p>
     <div class="done">
@@ -148,6 +184,17 @@ footer { margin-top: 24px; font-size: 12.5px; color: var(--ink-3); text-align: c
       <summary id="exSummary">예문 보기</summary>
       <ul id="examples" class="examples"></ul>
       <p class="examples-note">구조만 참고하세요. 회사명과 수치는 가렸습니다.</p>
+    </details>
+  </section>
+
+  <section class="step">
+    <details class="find" id="findBox">
+      <summary><b>🔁 다른 말 찾기</b><span>흔한 말을 넣으면 같은 자리에 쓰는 보고서 말을 보여 줍니다</span></summary>
+      <div class="find-row">
+        <input type="search" id="findQ" placeholder="예: 개선, 늘리다, 문제, 그리고" autocomplete="off" aria-label="찾을 말" />
+        <label><input type="checkbox" id="findDomain" /> 분야 어휘 포함 (HRD·스마트팩토리·설문)</label>
+      </div>
+      <div id="findResults"></div>
     </details>
   </section>
 
@@ -167,10 +214,11 @@ footer { margin-top: 24px; font-size: 12.5px; color: var(--ink-3); text-align: c
 
 <script>
 const DATA = /*__PATTERN_DATA__*/null;
+const VOCAB = /*__VOCAB_DATA__*/null;
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const state = { rel: DATA.relations[0].id, pid: null, values: {} };
+const state = { rel: DATA.relations[0].id, pid: null, values: {}, focus: null, vgroup: {}, lastIns: {} };
 
 /* 조사: 앞말 받침에 맞춰 고른다 (받침을 알 수 없으면 '은(는)'처럼 둘 다) */
 const JOSA = {
@@ -246,8 +294,12 @@ function renderFill() {
   $('tip').textContent = '💡 ' + p.tip;
   $('exSummary').textContent = `예문 ${p.examples.length}개 보기`;
   $('examples').innerHTML = p.examples.map(e => `<li>${esc(e)}</li>`).join('');
-  $('madlib').querySelectorAll('input').forEach(inp => inp.addEventListener('input', () => { state.values[inp.dataset.slot] = inp.value; update(); }));
+  $('madlib').querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('input', () => { state.values[inp.dataset.slot] = inp.value; update(); });
+    inp.addEventListener('focus', () => { if (state.focus !== inp.dataset.slot) { state.focus = inp.dataset.slot; renderSuggest(); } });
+  });
   update();
+  renderSuggest();
 }
 function fit(inp) {
   const m = $('measure'); m.textContent = inp.value || inp.placeholder;
@@ -264,6 +316,97 @@ function update() {
   $('copy').disabled = filled === 0;
 }
 function render() { renderKinds(); renderForms(); renderFill(); }
+
+/* ── 보고서 어휘: 이 칸에 쓸 말 ── */
+const VG = Object.fromEntries(VOCAB.groups.map(g => [g.id, g]));
+// 패턴 빈칸 이름 → 어휘의 빈칸 이름
+const SLOT_MAP = { '대상1': '대상', '대상2': '대상', '상태1': '상태', '상태2': '상태', '이전': '상태', '이후': '상태',
+  '전체': '대상', '부분': '대상', '세부1': '문제', '세부2': '문제', '종합': '행동', '단계1': '행동', '단계2': '행동', '단계3': '행동' };
+const vslot = s => SLOT_MAP[s] || s;
+const wordChips = (words, hit) => words.map(w => `<button type="button" class="word${hit && hit(w) ? ' hit' : ''}" data-w="${esc(w)}">${esc(w)}</button>`).join('');
+
+function renderSuggest() {
+  const p = current(), box = $('sg');
+  const slot = p.slots.includes(state.focus) ? state.focus : p.slots[0];
+  const vs = vslot(slot);
+  const all = VOCAB.groups.filter(g => g.domain === '일반' && g.slots.includes(vs));
+  if (!all.length) { box.hidden = true; return; }
+  box.hidden = false;
+  const featured = (VOCAB.featured_by_slot[vs] || []).filter(id => VG[id]);
+  const sel = VG[state.vgroup[vs]] ? state.vgroup[vs] : (featured[0] || all[0].id);
+  const others = all.filter(g => !featured.includes(g.id));
+  const g = VG[sel];
+  box.innerHTML = `
+    <div class="sg-head"><b>‘${esc(slot)}’ 칸에 쓸 말</b><span>단어를 누르면 칸에 들어갑니다</span></div>
+    <div class="sg-groups">${featured.map(id => `<button type="button" class="sg-group" data-g="${id}" aria-pressed="${id === sel}">${esc(VG[id].name)}</button>`).join('')}
+      ${others.length ? `<select class="sg-more" aria-label="다른 묶음"><option value="">더 보기 (${others.length}묶음)</option>${others.map(o => `<option value="${o.id}"${o.id === sel ? ' selected' : ''}>${esc(o.name)}</option>`).join('')}</select>` : ''}</div>
+    <div class="words">${wordChips(g.words)}</div>
+    <p class="sg-desc">${esc(g.desc)}${g.cautions.length ? ` · <span class="warn">주의: ${esc(g.cautions.join(' / '))}</span>` : ''}</p>`;
+  box.querySelectorAll('.sg-group').forEach(b => b.addEventListener('click', () => { state.vgroup[vs] = b.dataset.g; renderSuggest(); }));
+  box.querySelector('.sg-more')?.addEventListener('change', e => { if (e.target.value) { state.vgroup[vs] = e.target.value; renderSuggest(); } });
+  box.querySelectorAll('.word').forEach(b => {
+    b.addEventListener('mousedown', e => e.preventDefault()); // 입력 칸의 커서를 유지
+    b.addEventListener('click', () => insertWord(slot, b.dataset.w));
+  });
+}
+// 선택한 글자가 있으면 바꾸고, 방금 넣은 단어가 끝에 있으면 그 단어만 바꾸고, 아니면 뒤에 한 칸 띄어 붙인다
+function insertWord(slot, w) {
+  const inp = $('madlib').querySelector(`input[data-slot="${CSS.escape(slot)}"]`);
+  if (!inp) return;
+  const v = inp.value.replace(/\s+$/, ''), a = inp.selectionStart, b = inp.selectionEnd, last = state.lastIns[slot];
+  let nv;
+  if (document.activeElement === inp && a !== b) nv = inp.value.slice(0, a) + w + inp.value.slice(b);
+  else if (last && v.endsWith(last)) nv = v.slice(0, v.length - last.length) + w;
+  else nv = v ? v + ' ' + w : w;
+  const caret = nv.length;
+  state.lastIns[slot] = w;
+  inp.value = nv; state.values[slot] = nv; update();
+  inp.focus(); inp.setSelectionRange(caret, caret);
+}
+
+/* ── 보고서 어휘: 다른 말 찾기 ── */
+// 일상어 → 어휘에 있는 대표 말 (검색 도우미)
+const EASY = { '늘리다': '증가', '늘다': '증가', '늘어나다': '증가', '줄이다': '감소', '줄다': '감소', '줄어들다': '감소', '높이다': '향상',
+  '올리다': '상승', '낮추다': '저감', '만들다': '구축', '세우다': '수립', '바꾸다': '전환', '고치다': '개선', '좋아지다': '향상',
+  '나빠지다': '악화', '없다': '부재', '모자라다': '부족', '부족하다': '부족', '시작하다': '착수', '하다': '추진', '돕다': '지원',
+  '함께': '협업', '같이': '협업', '그리고': '또한', '그래서': '따라서', '그런데': '한편', '왜냐하면': '때문에', '빠르게': '신속', '계속': '지속' };
+function findGroups(q, withDomain) {
+  const base = q.replace(/(하다|하기|한다|되다|이다|다)$/, '');
+  const keys = [...new Set([q, base, EASY[q]].filter(k => k && k.length))];
+  const scored = [];
+  for (const g of VOCAB.groups) {
+    if (!withDomain && g.domain !== '일반') continue;
+    let s = 0;
+    if (g.words.some(w => keys.includes(w))) s += 3;
+    if (keys.some(k => g.name.includes(k) || g.desc.includes(k))) s += 2;
+    if (keys.some(k => k.length >= 2 && g.words.some(w => w !== k && w.includes(k)))) s += 1;
+    if (s) scored.push({ g, s });
+  }
+  return { keys, list: scored.sort((a, b) => b.s - a.s).slice(0, 8).map(x => x.g) };
+}
+function renderFind() {
+  const q = $('findQ').value.trim(), out = $('findResults');
+  if (!q) { out.innerHTML = '<p class="find-empty">찾을 말을 입력하세요. 단어를 누르면 복사됩니다.</p>'; return; }
+  const { keys, list } = findGroups(q, $('findDomain').checked);
+  if (!list.length) {
+    const inDomain = !$('findDomain').checked && findGroups(q, true).list.length;
+    out.innerHTML = `<p class="find-empty">‘${esc(q)}’${josaFor(q, '과')} 같은 자리에 쓰는 말을 찾지 못했습니다. ` +
+      (inDomain ? '분야 어휘에 있습니다 — 위의 ‘분야 어휘 포함’을 켜 보세요.' : '더 짧게 쓰거나(예: 늘리다 → 증가) 다른 말로 찾아보세요.') + '</p>';
+    return;
+  }
+  const hit = w => keys.includes(w);
+  out.innerHTML = list.map(g => `<div class="fr"><div class="fr-h"><b>${esc(g.name)}</b><span class="cat">${esc(g.domain === '일반' ? g.category : g.domain)}</span><span class="d">${esc(g.desc)}</span></div>
+    <div class="words">${wordChips(g.words, hit)}</div>${g.cautions.length ? `<p class="sg-desc"><span class="warn">주의: ${esc(g.cautions.join(' / '))}</span></p>` : ''}</div>`).join('');
+  out.querySelectorAll('.word').forEach(b => b.addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(b.dataset.w); }
+    catch (e) { const t = document.createElement('textarea'); t.value = b.dataset.w; document.body.append(t); t.select(); document.execCommand('copy'); t.remove(); }
+    toast(`‘${b.dataset.w}’ 복사했습니다`);
+  }));
+}
+let findT;
+$('findQ').addEventListener('input', () => { clearTimeout(findT); findT = setTimeout(renderFind, 120); });
+$('findDomain').addEventListener('change', renderFind);
+renderFind();
 
 $('copy').addEventListener('click', async () => {
   const text = $('result').textContent;
@@ -287,7 +430,7 @@ guide.querySelectorAll('.copy-code').forEach(b => b.addEventListener('click', as
   b.textContent = '복사됨'; setTimeout(() => { b.textContent = '복사'; }, 1500); // 창 위에서는 아래쪽 알림이 가려지므로 버튼에 표시
 }));
 
-$('about').textContent = `${DATA.title} · ${DATA.about}`;
+$('about').textContent = `${DATA.title} · ${DATA.about} 보고서 어휘 ${VOCAB.groups.length}묶음은 공공기관·대기업 보고서에서 모은 실전 용어입니다.`;
 state.pid = patternsOf(state.rel)[0].id;
 render();
 </script>
