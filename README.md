@@ -1,5 +1,7 @@
 # koreport-skill
 
+[![skills.sh](https://skills.sh/b/iksangyoo-sys/koreport-skill)](https://skills.sh/iksangyoo-sys/koreport-skill)
+
 유익상의 「AI가 못 쓰는 보고서 쓰기」 교안을 담은 에이전트 스킬입니다. 한국어 업무 보고서를 기획·작성·진단·수정할 때 쓰며, 한국 기업 보고서 문장 패턴 22개(13편)와 학습자용 「보고서 문장 공식」 도구가 함께 들어 있습니다.
 
 ## 설치
