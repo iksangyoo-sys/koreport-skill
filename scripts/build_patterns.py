@@ -3,16 +3,19 @@
     python scripts/build_patterns.py
 
 입력:  assets/sentence-patterns.json        (원천 데이터 — 패턴을 고칠 때는 이 파일만 고친다)
+       assets/sentence-patterns-guide.md    (학습자 사용안내서 — 웹 도구의 '사용안내서' 창에 들어간다)
        scripts/sentence-patterns.template.html
 출력:  references/13-sentence-patterns.md  (에이전트가 읽는 참고 파일)
        assets/sentence-patterns.html       (학습자에게 주는 '문장 공식 찾기', 인터넷 없이 동작)
 """
+import html
 import json
 import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "assets" / "sentence-patterns.json"
+GUIDE = ROOT / "assets" / "sentence-patterns-guide.md"
 TEMPLATE = ROOT / "scripts" / "sentence-patterns.template.html"
 OUT_MD = ROOT / "references" / "13-sentence-patterns.md"
 OUT_HTML = ROOT / "assets" / "sentence-patterns.html"
@@ -154,12 +157,70 @@ def build_md(d):
     return "\n".join(out)
 
 
+def _inline(text):
+    """**굵게**, `코드`만 처리한다 (안내서에 쓰는 것만)."""
+    out = html.escape(text, quote=False)
+    out = re.sub(r"`([^`]+)`", r"<code>\1</code>", out)
+    return re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", out)
+
+
+def guide_to_html(md):
+    """안내서용 최소 마크다운 변환: 제목(#, ##), 문단, 목록(-, 1., 4칸 들여쓴 하위 목록), 표, ``` 코드 블록."""
+    lines = md.splitlines()
+    out, i = [], 0
+    while i < len(lines):
+        line = lines[i]
+        if not line.strip():
+            i += 1
+        elif line.startswith("```"):
+            i += 1
+            code = []
+            while i < len(lines) and not lines[i].startswith("```"):
+                code.append(lines[i]); i += 1
+            i += 1
+            out.append('<div class="code"><button type="button" class="btn ghost copy-code">복사</button><pre>'
+                       + html.escape("\n".join(code), quote=False) + "</pre></div>")
+        elif line.startswith("## "):
+            out.append(f"<h3>{_inline(line[3:])}</h3>"); i += 1
+        elif line.startswith("# "):
+            i += 1  # 문서 제목은 창 머리글이 대신한다
+        elif line.startswith("|"):
+            rows = []
+            while i < len(lines) and lines[i].startswith("|"):
+                rows.append([c.strip() for c in lines[i].strip().strip("|").split("|")]); i += 1
+            head, body = rows[0], [r for r in rows[2:]]
+            out.append('<div class="table-wrap"><table><thead><tr>' + "".join(f"<th>{_inline(c)}</th>" for c in head)
+                       + "</tr></thead><tbody>" + "".join("<tr>" + "".join(f"<td>{_inline(c)}</td>" for c in r) + "</tr>" for r in body)
+                       + "</tbody></table></div>")
+        elif re.match(r"(- |\d+\. )", line):
+            tag = "ol" if line[0].isdigit() else "ul"
+            items = []
+            while i < len(lines) and (re.match(r"(- |\d+\. )", lines[i]) or lines[i].startswith("    ")):
+                if lines[i].startswith("    "):
+                    items[-1][1].append(re.sub(r"^\s+(- |\d+\. )", "", lines[i]))
+                else:
+                    items.append([re.sub(r"^(- |\d+\. )", "", lines[i]), []])
+                i += 1
+            out.append(f"<{tag}>" + "".join(
+                f"<li>{_inline(t)}" + ("<ul>" + "".join(f"<li>{_inline(c)}</li>" for c in sub) + "</ul>" if sub else "") + "</li>"
+                for t, sub in items) + f"</{tag}>")
+        else:
+            para = []
+            while i < len(lines) and lines[i].strip() and not re.match(r"(#|\||```|- |\d+\. )", lines[i]):
+                para.append(lines[i].strip()); i += 1
+            out.append(f"<p>{_inline(' '.join(para))}</p>")
+    return "\n".join(out)
+
+
 def build_html(d):
     tpl = TEMPLATE.read_text(encoding="utf-8")
     payload = json.dumps(d, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
     marker = "/*__PATTERN_DATA__*/null"
+    guide_marker = "<!--__GUIDE_HTML__-->"
     assert marker in tpl, "템플릿에 데이터 자리표시가 없습니다"
-    return tpl.replace(marker, payload)
+    assert guide_marker in tpl, "템플릿에 안내서 자리표시가 없습니다"
+    guide = guide_to_html(GUIDE.read_text(encoding="utf-8"))
+    return tpl.replace(marker, payload).replace(guide_marker, guide)
 
 
 def main():
