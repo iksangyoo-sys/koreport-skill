@@ -26,6 +26,8 @@ npx skills add iksangyoo-sys/koreport-skill
 
 ## 학습자용 도구
 
+웹에서 바로 쓰기: https://iksangyoo-sys.github.io/koreport-skill/
+
 `assets/sentence-patterns.html` 파일 하나를 더블클릭하면 「보고서 문장 공식」이 열립니다. 인터넷 없이 동작하며, 화면 오른쪽 위 **사용안내서** 버튼에 사용법이 있습니다.
 
 ## 구성
