@@ -2,7 +2,7 @@
 
 [![skills.sh](https://skills.sh/b/iksangyoo-sys/koreport-skill)](https://skills.sh/iksangyoo-sys/koreport-skill)
 
-유익상의 「AI가 못 쓰는 보고서 쓰기」 교안을 담은 에이전트 스킬입니다. 한국어 업무 보고서를 기획·작성·진단·수정할 때 쓰며, 한국 기업 보고서 문장 패턴 22개(13편)와 학습자용 「보고서 문장 공식」 도구가 함께 들어 있습니다.
+유익상의 「AI가 못 쓰는 보고서 쓰기」 교안을 담은 에이전트 스킬입니다. 한국어 업무 보고서를 기획·작성·진단·수정할 때 쓰며, 한국 기업 보고서 문장 패턴 22개(13편), 보고서 어휘 240묶음(14편), 학습자용 「보고서 문장 공식」 도구가 함께 들어 있습니다.
 
 ## 설치
 
@@ -33,10 +33,11 @@ npx skills add iksangyoo-sys/koreport-skill
 | 경로 | 내용 |
 | --- | --- |
 | `SKILL.md` | 스킬 본문 — 작성 절차와 작업별로 읽을 파일 |
-| `references/` | 교안 13편 (13편 = 문장 패턴 공식) |
+| `references/` | 교안 14편 (13편 = 문장 패턴 공식, 14편 = 보고서 어휘) |
 | `assets/sentence-patterns.json` | 문장 패턴 원천 데이터 |
+| `assets/report-vocabulary.json` | 보고서 어휘 원천 데이터 (240묶음, 2,452단어) |
 | `assets/sentence-patterns-guide.md` | 학습자 사용안내서 원문 |
 | `assets/sentence-patterns.html` | 학습자용 「보고서 문장 공식」 (빌드 결과) |
-| `scripts/build_patterns.py` | 위 데이터로 13편과 HTML을 다시 만드는 스크립트 |
+| `scripts/build_patterns.py` | 위 데이터로 13편·14편과 HTML을 다시 만드는 스크립트 |
 
-패턴이나 안내서를 고친 뒤에는 `python scripts/build_patterns.py`를 실행해 `references/13-sentence-patterns.md`와 `assets/sentence-patterns.html`을 다시 만듭니다.
+패턴·어휘·안내서를 고친 뒤에는 `python scripts/build_patterns.py`를 실행해 `references/13-sentence-patterns.md`, `references/14-report-vocabulary.md`, `assets/sentence-patterns.html`을 다시 만듭니다.
