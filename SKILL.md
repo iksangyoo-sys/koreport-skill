@@ -43,6 +43,18 @@ description: 유익상의 「AI가 못 쓰는 보고서 쓰기」 교안 17편�
 
 각 파일은 같은 구성이다: 핵심 원칙 → 방법과 도구 → 전후 사례 → 점검 질문. 진단만 할 때는 해당 파일의 「점검 질문」부터 본다.
 
+## 보고서 유형별 전용 스킬
+
+특정 유형의 보고서라면 이 스킬의 일반 방법론 위에 `skills/` 의 전용 스킬을 함께 읽는다. 전용 스킬은 그 유형에 특화된 구조·교정 기준만 담고, 나머지는 이 스킬을 따른다.
+
+| 유형 | 파일 |
+|---|---|
+| 문제해결형(개선방안·대책·제도 정비방안), 추진방안형(추진방안·교육지원방안 등 기획형) 보고서 | [problem-action-report](skills/problem-action-report/SKILL.md) |
+| QSS(현장 개선활동) 보고서: 마이머신·My M&S·개선리더·모델 Plant·혁신공장만들기·발생원 제거 | [qss-report](skills/qss-report/SKILL.md) |
+| 업무 이메일: 요청·공지·업무보고·협의·외부 문의 | [business-email](skills/business-email/SKILL.md) |
+| 주간업무 실적·계획 보고 | [weekly-report](skills/weekly-report/SKILL.md) |
+| 회의 메모·녹취를 회의결과 보고서로 정리 | [meeting-report](skills/meeting-report/SKILL.md) |
+
 ## 작성 절차
 
 보고서 쓰기는 **알기 → 빚기 → 주기**의 여정이다. 여섯 동작으로 실행한다. 앞의 둘은 넓히고(발산), 가운데 둘은 엮어 내고(창발), 뒤의 둘은 줄인다(수렴).

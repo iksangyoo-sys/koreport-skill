@@ -4,6 +4,8 @@
 
 유익상의 「AI가 못 쓰는 보고서 쓰기」 교안을 담은 에이전트 스킬입니다. 한국어 업무 보고서를 기획·작성·진단·수정할 때 쓰며, 한국 기업 보고서 문장 패턴 22개(13편), 보고서 어휘 240묶음(14편), 실제 사내 보고서 장표에서 정리한 1-page 장표 양식(15편), 교정 사례집(16편), 주간업무·회의결과·이메일·제안서 등 유형별 작성 Tip(17편), 학습자용 「보고서 문장 공식」 도구가 함께 들어 있습니다.
 
+`skills/` 에는 보고서 유형별 전용 스킬 5개(문제해결·추진방안 보고서, QSS 보고서, 업무 이메일, 주간업무 보고, 회의결과 보고)가 있습니다. 각 스킬은 `koreport-skill`의 일반 방법론 위에 해당 유형에 특화된 내용만 얹습니다. skills.sh로 설치하면 설치할 스킬을 고를 수 있고, 하나만 설치하려면 `npx skills add iksangyoo-sys/koreport-skill --skill weekly-report`처럼 이름을 지정합니다.
+
 ## 설치
 
 ### skills.sh (Claude Code 등 코딩 에이전트)
@@ -36,6 +38,11 @@ npx skills add iksangyoo-sys/koreport-skill
 | --- | --- |
 | `SKILL.md` | 스킬 본문 — 작성 절차와 작업별로 읽을 파일 |
 | `references/` | 교안 17편 (13편 = 문장 패턴 공식, 14편 = 보고서 어휘, 15편 = 1-page 장표 양식, 16편 = 교정 사례집, 17편 = 유형별 작성 Tip·이메일·제안서) |
+| `skills/problem-action-report/` | 전용 스킬 — 문제해결형·추진방안형 보고서 |
+| `skills/qss-report/` | 전용 스킬 — QSS(현장 개선활동) 보고서 |
+| `skills/business-email/` | 전용 스킬 — 업무 이메일 |
+| `skills/weekly-report/` | 전용 스킬 — 주간업무 실적·계획 보고 |
+| `skills/meeting-report/` | 전용 스킬 — 회의결과 보고 |
 | `assets/sentence-patterns.json` | 문장 패턴 원천 데이터 |
 | `assets/report-vocabulary.json` | 보고서 어휘 원천 데이터 (240묶음, 2,452단어) |
 | `assets/sentence-patterns-guide.md` | 학습자 사용안내서 원문 |
