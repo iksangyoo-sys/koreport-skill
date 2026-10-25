@@ -4,16 +4,20 @@
 
 유익상의 「AI가 못 쓰는 보고서 쓰기」 교안을 담은 에이전트 스킬입니다. 한국어 업무 보고서를 기획·작성·진단·수정할 때 쓰며, 학습자용 「보고서 문장 공식」 도구가 함께 들어 있습니다.
 
-`skills/` 에는 전용 스킬 9개가 있습니다. 보고서 유형별 6개(문제해결·추진방안 보고서, QSS 보고서, 업무 이메일, 주간업무 보고, 회의결과 보고, 1-page 장표 양식)와 작업별 3개(문장 패턴 공식 22개, 보고서 어휘 240묶음, 교정 사례집)입니다. 각 스킬은 `koreport-skill`의 일반 방법론 위에 해당 유형·작업에 특화된 내용만 얹습니다. skills.sh로 설치하면 설치할 스킬을 고를 수 있고, 하나만 설치하려면 `npx skills add iksangyoo-sys/koreport-skill --skill weekly-report`처럼 이름을 지정합니다.
+`skills/` 에는 전용 스킬 9개가 있습니다. 보고서 유형별 6개(문제해결·추진방안 보고서, QSS 보고서, 업무 이메일, 주간업무 보고, 회의결과 보고, 1-page 장표 양식)와 작업별 3개(문장 패턴 공식 22개, 보고서 어휘 240묶음, 교정 사례집)입니다. 각 스킬은 `koreport-skill`의 일반 방법론 위에 해당 유형·작업에 특화된 내용만 얹습니다. 전용 스킬을 독립 스킬로 설치하는 방법은 아래 「설치」에 있습니다.
 
 ## 설치
 
 ### skills.sh (Claude Code 등 코딩 에이전트)
 
 ```bash
-npx skills add iksangyoo-sys/koreport-skill
+npx skills add iksangyoo-sys/koreport-skill --full-depth
 ```
 
+- `--full-depth`를 붙여야 메인 스킬과 `skills/` 의 전용 스킬 9개가 모두 독립 스킬로 잡힙니다. 붙이지 않으면 메인 스킬(`koreport-skill`) 하나만 설치되고, 전용 스킬은 메인 스킬이 필요할 때 읽는 파일로만 쓰입니다.
+- 설치할 스킬 목록 보기: `npx skills add iksangyoo-sys/koreport-skill --full-depth --list`
+- 전용 스킬 하나만 설치: `npx skills add iksangyoo-sys/koreport-skill --full-depth --skill weekly-report`
+- 이미 설치했다면 `npx skills update`로 최신 버전을 받습니다.
 - Claude Code에만 설치: `npx skills add iksangyoo-sys/koreport-skill -a claude-code`
 - 모든 프로젝트에서 쓰기(사용자 전체 설치): 뒤에 `-g`를 붙입니다.
 - Node.js가 설치되어 있어야 합니다.
