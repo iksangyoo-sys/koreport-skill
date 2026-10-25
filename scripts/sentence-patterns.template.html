@@ -111,12 +111,9 @@ dialog.guide::backdrop { background: rgba(15, 20, 30, .45); }
 .sg-desc .warn { color: #a8431a; }
 
 /* 다른 말 찾기 */
-.find summary { list-style: none; cursor: pointer; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
-.find summary::-webkit-details-marker { display: none; }
-.find summary b { font-size: 17px; }
-.find summary span { color: var(--ink-3); font-size: 14px; }
-.find summary::after { content: "펼치기 ▾"; margin-left: auto; color: var(--accent); font-size: 14px; font-weight: 600; }
-.find[open] summary::after { content: "접기 ▴"; }
+.find-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.find-head b { font-size: 17px; }
+.find-head span { color: var(--ink-3); font-size: 14px; }
 .find-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 14px; }
 .find-row input[type=search] { flex: 1 1 240px; border: 1.5px solid var(--line); border-radius: 8px; padding: 8px 12px; font-size: 16px; }
 .find-row input[type=search]:focus { outline: none; border-color: var(--accent); }
@@ -156,6 +153,15 @@ footer { margin-top: 24px; font-size: 12.5px; color: var(--ink-3); text-align: c
     <button type="button" class="guide-btn" id="openGuide" aria-haspopup="dialog">📘 보고서 문장 공식 사용안내서</button>
   </div>
 
+  <section class="step find" id="findBox">
+    <div class="find-head"><b>🔁 다른 말 찾기</b><span>흔한 말을 넣으면 같은 자리에 쓰는 보고서 말을 보여 줍니다</span></div>
+    <div class="find-row">
+      <input type="search" id="findQ" placeholder="예: 개선, 늘리다, 문제, 그리고" autocomplete="off" aria-label="찾을 말" />
+      <label><input type="checkbox" id="findDomain" /> 분야 어휘 포함 (HRD·스마트팩토리·설문)</label>
+    </div>
+    <div id="findResults"></div>
+  </section>
+
   <section class="step">
     <h2><span class="num">1</span>어떤 말을 하고 싶나요?</h2>
     <div id="kinds" class="kinds"></div>
@@ -184,17 +190,6 @@ footer { margin-top: 24px; font-size: 12.5px; color: var(--ink-3); text-align: c
       <summary id="exSummary">예문 보기</summary>
       <ul id="examples" class="examples"></ul>
       <p class="examples-note">구조만 참고하세요. 회사명과 수치는 가렸습니다.</p>
-    </details>
-  </section>
-
-  <section class="step">
-    <details class="find" id="findBox">
-      <summary><b>🔁 다른 말 찾기</b><span>흔한 말을 넣으면 같은 자리에 쓰는 보고서 말을 보여 줍니다</span></summary>
-      <div class="find-row">
-        <input type="search" id="findQ" placeholder="예: 개선, 늘리다, 문제, 그리고" autocomplete="off" aria-label="찾을 말" />
-        <label><input type="checkbox" id="findDomain" /> 분야 어휘 포함 (HRD·스마트팩토리·설문)</label>
-      </div>
-      <div id="findResults"></div>
     </details>
   </section>
 
