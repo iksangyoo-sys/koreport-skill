@@ -6,8 +6,8 @@
        assets/sentence-patterns-guide.md    (학습자 사용안내서 — 웹 도구의 '사용안내서' 창에 들어간다)
        assets/report-vocabulary.json        (보고서 어휘 원천 데이터 — 어휘를 고칠 때는 이 파일만 고친다)
        scripts/sentence-patterns.template.html
-출력:  references/13-sentence-patterns.md  (에이전트가 읽는 참고 파일)
-       references/14-report-vocabulary.md  (에이전트가 읽는 참고 파일)
+출력:  skills/sentence-patterns/SKILL.md  (에이전트가 읽는 스킬)
+       skills/report-vocabulary/SKILL.md  (에이전트가 읽는 스킬)
        assets/sentence-patterns.html       (학습자에게 주는 '문장 공식 찾기', 인터넷 없이 동작)
 """
 import html
@@ -19,9 +19,9 @@ ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "assets" / "sentence-patterns.json"
 GUIDE = ROOT / "assets" / "sentence-patterns-guide.md"
 VOCAB = ROOT / "assets" / "report-vocabulary.json"
-OUT_VOCAB_MD = ROOT / "references" / "14-report-vocabulary.md"
+OUT_VOCAB_MD = ROOT / "skills" / "report-vocabulary" / "SKILL.md"
 TEMPLATE = ROOT / "scripts" / "sentence-patterns.template.html"
-OUT_MD = ROOT / "references" / "13-sentence-patterns.md"
+OUT_MD = ROOT / "skills" / "sentence-patterns" / "SKILL.md"
 OUT_HTML = ROOT / "assets" / "sentence-patterns.html"
 
 # 받침 유무를 모를 때(빈칸) 보여 줄 조사 표기
@@ -46,11 +46,18 @@ def build_md(d):
 
     out = []
     w = out.append
-    w("# 13. 문장 패턴 공식 — 보고 단계와 문장 관계로 공식을 골라 빈칸을 채운다")
+    w("---")
+    w("name: sentence-patterns")
+    w("description: 한국 기업 보고서 문장 패턴 공식(보고 단계 × 문장 관계, 22개)으로 헤드라인·본문 문형을 고를 때 사용한다. 어떤 문형으로 쓸지 막힐 때, AI 초안의 번역투·서술형을 한국 보고서 문체로 바꿀 때, 문장 진단에서 빠진 요소를 패턴 이름으로 짚을 때 적용한다.")
+    w("---")
+    w("")
+    w("# 문장 패턴 공식 — 보고 단계와 문장 관계로 공식을 골라 빈칸을 채운다")
     w("")
     w("> **언제 읽나:** 헤드라인·본문 문장을 조립할 때 어떤 문형을 쓸지 막힐 때, AI 초안이 번역투·서술형이라 한국 기업 보고서 문체로 바꿔야 할 때, 문장 진단에서 빠진 요소를 패턴 이름으로 짚을 때 연다. 키워드 조립·간결화는 09편, 종결·표기 교정은 10편을 함께 본다.")
     w("")
     w(f"> **자료:** {d['about']} 원천 데이터는 `assets/sentence-patterns.json`이고, 이 파일은 `scripts/build_patterns.py`로 만든다. 직접 고치지 말고 JSON을 고친 뒤 다시 만든다.")
+    w("")
+    w("> **편 번호:** 09·10·12편 등은 `koreport-skill`의 `references/` 파일을 가리킨다. 이 스킬은 `koreport-skill`의 일반 방법론 위에서 쓴다.")
     w("")
     w("## 핵심 원칙")
     w("")
@@ -253,11 +260,18 @@ def build_vocab_md(v):
     out = []
     w = out.append
     nwords = sum(len(g["words"]) for g in groups)
-    w("# 14. 보고서 어휘 — 같은 자리에 쓰는 한국 보고서 말을 골라 쓴다")
+    w("---")
+    w("name: report-vocabulary")
+    w("description: 한국 보고서 어휘(같은 자리에 쓰는 말 240묶음)로 단어를 고를 때 사용한다. 초안의 단어가 밋밋하거나 같은 행동어·연결어가 되풀이될 때, AI 초안의 일반 어휘를 한국 보고서 어휘로 바꿀 때, sentence-patterns 공식의 빈칸에 넣을 말을 고를 때 적용한다.")
+    w("---")
     w("")
-    w("> **언제 읽나:** 초안의 단어가 밋밋하거나 같은 말이 되풀이될 때, AI 초안의 일반 어휘를 한국 보고서 어휘로 바꿀 때, 13편 공식의 빈칸에 넣을 말을 고를 때, 연결어·종결 어미를 다듬을 때 연다. 중복 해소 방법은 09편, 느낌말·모호한 말 교정은 10편을 함께 본다.")
+    w("# 보고서 어휘 — 같은 자리에 쓰는 한국 보고서 말을 골라 쓴다")
+    w("")
+    w("> **언제 읽나:** 초안의 단어가 밋밋하거나 같은 말이 되풀이될 때, AI 초안의 일반 어휘를 한국 보고서 어휘로 바꿀 때, sentence-patterns 공식의 빈칸에 넣을 말을 고를 때, 연결어·종결 어미를 다듬을 때 연다. 중복 해소 방법은 09편, 느낌말·모호한 말 교정은 10편을 함께 본다.")
     w("")
     w(f"> **자료:** {v['about']} 묶음 {len(groups)}개, 단어 {nwords}개. 원천 데이터는 `assets/report-vocabulary.json`이고, 이 파일은 `scripts/build_patterns.py`로 만든다. 직접 고치지 말고 JSON을 고친 뒤 다시 만든다.")
+    w("")
+    w("> **편 번호:** 09·10·12편 등은 `koreport-skill`의 `references/` 파일을 가리킨다. 이 스킬은 `koreport-skill`의 일반 방법론 위에서 쓴다.")
     w("")
     w("## 핵심 원칙")
     w("")
@@ -280,9 +294,9 @@ def build_vocab_md(v):
             continue
         w(f"| {cat} | {VOCAB_CAT_DESC.get(cat, '')} | " + ", ".join(f"{g['id']} {g['name']}" for g in gs) + " |")
     w("")
-    w("### 2. 13편 빈칸에 맞는 묶음")
+    w("### 2. 문장 패턴 공식 빈칸에 맞는 묶음")
     w("")
-    w("13편 공식의 빈칸을 채울 때 아래 묶음에서 단어를 고른다. 분야 어휘는 뺐다.")
+    w("sentence-patterns 공식의 빈칸을 채울 때 아래 묶음에서 단어를 고른다. 분야 어휘는 뺐다.")
     w("")
     w("| 빈칸 | 묶음 |")
     w("|---|---|")
@@ -294,7 +308,7 @@ def build_vocab_md(v):
     w("")
     w("### 3. 에이전트 사용법")
     w("")
-    w("- **쓸 때:** 13편 공식으로 문장을 조립하면서, 빈칸에 들어갈 말을 2번 표의 묶음에서 고른다. 자료의 사실과 수치는 바꾸지 않는다.")
+    w("- **쓸 때:** sentence-patterns 공식으로 문장을 조립하면서, 빈칸에 들어갈 말을 2번 표의 묶음에서 고른다. 자료의 사실과 수치는 바꾸지 않는다.")
     w("- **고칠 때:** 같은 행동어·연결어가 한 장표에 세 번 넘게 나오면, 같은 묶음의 다른 말로 바꾼다. AI 초안의 '개선·향상·강화' 같은 일반 어휘는 보고 단계에 맞는 묶음의 말로 바꾼다.")
     w("- **진단할 때:** 밋밋한 단어, 단계에 맞지 않는 단어(결과 보고인데 '검토·추진'으로 끝남), 과장된 단어를 짚고 묶음 ID와 함께 대안을 제시한다.")
     w("- **학습자에게 줄 때:** `assets/sentence-patterns.html`의 빈칸 아래 '이 칸에 쓸 말'과 맨 아래 '다른 말 찾기'가 이 어휘를 쓴다. 빈칸별 첫 화면 묶음은 JSON의 `featured_by_slot`에서 정한다.")
