@@ -1,2 +1,5 @@
 __pycache__/
 *.pyc
+
+# claude.ai 업로드용 zip (GitHub에 올리지 않음)
+claude-ai-upload/
