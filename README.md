@@ -42,6 +42,7 @@ python scripts/merge_slides.py out.pptx ppt_master_result.pptx --map 4=1 -o fina
 | `scripts/merge_slides.py` | 장표 교체 병합 |
 | `koreport/` | koreport 방법론 12편 + 전용 스킬 9개 (하위 스킬 파일명은 `GUIDE.md`) |
 | `index.html`, `assets/sentence-patterns.html` | 웹 도구 「보고서 문장 공식」 (https://iksangyoo-sys.github.io/koreport-skill/) |
+| `koreport/scripts/build_patterns.py` | 문장 패턴·어휘 JSON을 고친 뒤 웹 도구와 두 전용 스킬(GUIDE.md)을 다시 만드는 스크립트 |
 
 ## 원본과 라이선스
 
