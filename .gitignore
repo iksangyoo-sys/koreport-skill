@@ -3,3 +3,8 @@ __pycache__/
 
 # claude.ai 업로드용 zip (GitHub에 올리지 않음)
 claude-ai-upload/
+
+# 회사 양식(내부 자료, 공개 저장소에 올리지 않음)
+templates/row.pptx
+templates/col.pptx
+templates/bullet.pptx

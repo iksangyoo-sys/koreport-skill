@@ -4,7 +4,7 @@
 
 ## 단계 고르기
 
-사용자가 정하지 않았으면 **T1(회사 양식)**로 진행한다. 회사 양식은 사용자가 말하지 않아도 적용한다. T2·T3로 올릴 때는 늘어나는 비용을 한 줄로 알린다.
+사용자가 정하지 않았으면 **T1(회사 양식)**로 진행한다. 회사 양식(templates의 row·col)은 사용자가 말하지 않아도 적용한다. **장표를 만들기 전에 가로(row)/세로(col)와 장 수를 묻는다**(요청에 이미 있으면 생략). T2·T3로 올릴 때는 늘어나는 비용을 한 줄로 알린다.
 
 | 단계 | 언제 | LLM 비용 |
 |---|---|---|
@@ -21,18 +21,21 @@
 
 ## T1 — 기본 장표 (회사 양식)
 
-기본은 회사 양식이다. 문안(`report_spec.md`)을 넘겨 스크립트만 실행한다.
+기본은 templates의 회사 양식 견본 배치다. 문안을 넘겨 스크립트만 실행한다.
 
 ```bash
-python "<RM_DIR>/scripts/spec_to_company.py" "<project>/report_spec.md" -o "<project>/<제목>.pptx"              # 가로 row.pptx
-python "<RM_DIR>/scripts/spec_to_company.py" "<project>/report_spec.md" -o "<project>/<제목>.pptx" --layout col  # A4 세로 col.pptx
+# 가로 = row.pptx 견본 배치(묶음 문장·회색선 박스·라벨 바·표·원형 라벨·하단 따옴표), 장마다 꽉 차게
+python "<RM_DIR>/scripts/spec_to_onepage.py" "<project>/onepage_spec.md" -o "<project>/<제목>.pptx" --pages <장 수>
+# 세로 = col.pptx 견본 배치(배너·제목 아래 '1. 섹션 : 헤드라인' + 둥근 라벨 행)
+python "<RM_DIR>/scripts/spec_to_company.py" "<project>/report_spec.md" -o "<project>/<제목>.pptx" --layout col
 ```
 
-- 문법은 `02-spec-format.md` 그대로다. 세로 양식에서는 【라벨】 아래 줄이 '둥근 라벨 + 본문' 행이 되고, `## [새쪽] …`으로 쪽을 나눈다.
-- 특별한 배치(원형 라벨, 2단 박스 등)가 꼭 필요할 때만 예시 `build_onepage.py`를 복사해 고친다(`examples/onepage_landscape_privacy/`, `examples/onepage_vertical_meeting/`).
+- 가로 문법은 `02-spec-format.md`의 '가로 견본 배치 문법'과 `templates/onepage_spec_template.md`. 여러 장이면 `[새쪽] 제목`으로 나눈다. 가로 렌더러는 report_spec.md(`## 장`, `HL:`)도 읽어 HL을 ❍ 묶음 문장으로 쓴다.
+- 세로 문법은 `02-spec-format.md` 그대로다. 【라벨】 아래 줄이 '둥근 라벨 + 본문' 행이 되고, `## [새쪽] …`으로 쪽을 나눈다.
+- 표지가 붙은 긴 가로 보고서만 `spec_to_company.py`(row, `## 장`마다 1장)를 쓴다.
 - 구조도·흐름도: `templates/bullet.pptx` 견본 도형을 복사해 쓴다.
 
-### 고정 블루 양식 (사용자가 요청할 때만)
+### 고정 블루 양식 (사용자가 이름을 대어 요청할 때만)
 
 ```bash
 python "<RM_DIR>/scripts/spec_to_pptx.py" "<project>/report_spec.md" -o "<project>/<제목>.pptx"
