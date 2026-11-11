@@ -1,60 +1,51 @@
-# koreport-skill
+# report-master
 
-[![skills.sh](https://skills.sh/b/iksangyoo-sys/koreport-skill)](https://skills.sh/iksangyoo-sys/koreport-skill)
+한국어 업무 보고서를 **koreport 방법론으로 문안부터 확정**하고, PPT는 **필요한 만큼만** 만드는 결합 스킬입니다.
 
-유익상의 「AI가 못 쓰는 보고서 쓰기」 교안을 담은 에이전트 스킬입니다. 한국어 업무 보고서를 기획·작성·진단·수정할 때 쓰며, 학습자용 「보고서 문장 공식」 도구가 함께 들어 있습니다.
+- 문안(독자 니즈 → 메시지 → 목차·헤드라인 → 본문)은 `report_spec.md` 한 파일로 확정합니다.
+- 기본 장표는 회사 양식(`templates/row.pptx` 가로, `col.pptx` 세로, `bullet.pptx` 도형 견본)으로 만듭니다. 사용자가 요청하지 않아도 적용합니다. **회사 양식 파일은 이 저장소에 포함하지 않으니** 각자 회사 양식을 같은 이름으로 `templates/`에 넣어 쓰세요(`templates/README.md` 참고). `scripts/spec_to_company.py`가 문안을 그대로 렌더링하므로 AI 없이 PC에서 돌려도 됩니다(비용 0원).
+- 고정 블루 양식이 필요하면 `scripts/spec_to_pptx.py`가 한국 기업 1-page 양식(블루 단색, 맑은 고딕, 장 4층 구조, 기호 위계)으로 바로 렌더링합니다. LLM이 장표를 그리지 않으므로 비용이 거의 들지 않습니다.
+- 개념도·프로세스·차트처럼 시각화가 메시지를 결정하는 장만 `@ppt-master`로 표시해 PPT Master로 그리고, `scripts/merge_slides.py`로 기본 덱에 끼워 넣습니다.
 
-`skills/` 에는 전용 스킬 9개가 있습니다. 보고서 유형별 6개(문제해결·추진방안 보고서, QSS 보고서, 업무 이메일, 주간업무 보고, 회의결과 보고, 1-page 장표 양식)와 작업별 3개(문장 패턴 공식 22개, 보고서 어휘 240묶음, 교정 사례집)입니다. 각 스킬은 `koreport-skill`의 일반 방법론 위에 해당 유형·작업에 특화된 내용만 얹습니다. 전용 스킬을 독립 스킬로 설치하는 방법은 아래 「설치」에 있습니다.
-
-## 설치
-
-### skills.sh (Claude Code 등 코딩 에이전트)
+## 빠른 사용
 
 ```bash
-npx skills add iksangyoo-sys/koreport-skill --full-depth
+# 1) 양식 점검
+python scripts/spec_to_pptx.py examples/sample_report.md --check
+# 2) 기본 장표 생성 (T1, 회사 양식)
+python scripts/spec_to_company.py examples/sample_report.md -o out.pptx                 # 가로
+python scripts/spec_to_company.py examples/sample_report.md -o out_col.pptx --layout col  # A4 세로
+#    (블루 양식: python scripts/spec_to_pptx.py examples/sample_report.md -o out_blue.pptx)
+# 3) @ppt-master 장만 PPT Master 브리프로 추출 (T2)
+python scripts/spec_to_pptx.py examples/sample_report.md --extract-visual visual_brief.md
+# 4) PPT Master 결과를 기본 덱에 병합
+python scripts/merge_slides.py out.pptx ppt_master_result.pptx --map 4=1 -o final.pptx
 ```
 
-- `--full-depth`를 붙여야 메인 스킬과 `skills/` 의 전용 스킬 9개가 모두 독립 스킬로 잡힙니다. 붙이지 않으면 메인 스킬(`koreport-skill`) 하나만 설치되고, 전용 스킬은 메인 스킬이 필요할 때 읽는 파일로만 쓰입니다.
-- 설치할 스킬 목록 보기: `npx skills add iksangyoo-sys/koreport-skill --full-depth --list`
-- 전용 스킬 하나만 설치: `npx skills add iksangyoo-sys/koreport-skill --full-depth --skill weekly-report`
-- 이미 설치했다면 `npx skills update`로 최신 버전을 받습니다.
-- Claude Code에만 설치: `npx skills add iksangyoo-sys/koreport-skill -a claude-code`
-- 모든 프로젝트에서 쓰기(사용자 전체 설치): 뒤에 `-g`를 붙입니다.
-- Node.js가 설치되어 있어야 합니다.
-
-### claude.ai (웹·데스크톱 앱)
-
-1. 이 저장소의 폴더를 `koreport-skill` 폴더째 zip으로 묶습니다.
-2. claude.ai의 **Customize → Skills**에서 **+ → Create skill → 업로드**로 zip을 올립니다.
-3. 예전 버전이 있으면 끄거나 지웁니다.
-
-사용자 지정 스킬은 Pro·Max·Team·Enterprise 요금제에서 코드 실행 기능을 켜야 쓸 수 있습니다.
-
-## 학습자용 도구
-
-웹에서 바로 쓰기: https://iksangyoo-sys.github.io/koreport-skill/
-
-`assets/sentence-patterns.html` 파일 하나를 더블클릭하면 「보고서 문장 공식」이 열립니다. 인터넷 없이 동작하며, 화면 오른쪽 위 **사용안내서** 버튼에 사용법이 있습니다.
+필요 패키지: `python-pptx` (T1·병합). PPT Master를 쓰는 T2·T3는 [hugohe3/ppt-master](https://github.com/hugohe3/ppt-master)를 따로 설치해 `ppt-master/` 폴더로 두세요.
 
 ## 구성
 
 | 경로 | 내용 |
-| --- | --- |
-| `SKILL.md` | 스킬 본문 — 작성 절차와 작업별로 읽을 파일 |
-| `references/` | 교안 12편 (01~12편) |
-| `skills/problem-action-report/` | 전용 스킬 — 문제해결형·추진방안형 보고서 |
-| `skills/qss-report/` | 전용 스킬 — QSS(현장 개선활동) 보고서 |
-| `skills/business-email/` | 전용 스킬 — 업무 이메일 |
-| `skills/weekly-report/` | 전용 스킬 — 주간업무 실적·계획 보고 |
-| `skills/meeting-report/` | 전용 스킬 — 회의결과 보고 |
-| `skills/onepage-format/` | 전용 스킬 — 한국 기업 1-page 장표 양식 |
-| `skills/sentence-patterns/` | 전용 스킬 — 문장 패턴 공식 22개 (빌드 결과) |
-| `skills/report-vocabulary/` | 전용 스킬 — 보고서 어휘 240묶음, 2,452단어 (빌드 결과) |
-| `skills/correction-casebook/` | 전용 스킬 — 교정·교열·윤문 사례집 |
-| `assets/sentence-patterns.json` | 문장 패턴 원천 데이터 |
-| `assets/report-vocabulary.json` | 보고서 어휘 원천 데이터 (240묶음, 2,452단어) |
-| `assets/sentence-patterns-guide.md` | 학습자 사용안내서 원문 |
-| `assets/sentence-patterns.html` | 학습자용 「보고서 문장 공식」 (빌드 결과) |
-| `scripts/build_patterns.py` | 위 데이터로 sentence-patterns·report-vocabulary 스킬과 HTML을 다시 만드는 스크립트 |
+|---|---|
+| `SKILL.md` | 전체 흐름과 출력 단계(T0~T3) |
+| `workflows/01-report-spec.md` | A단계: koreport로 문안 확정 |
+| `workflows/02-spec-format.md` | `report_spec.md` 문법 |
+| `workflows/03-pptx-output.md` | B단계: 장표 생성, PPT Master 연결, 수정 흐름 |
+| `templates/report_spec_template.md` | 빈 양식 |
+| `examples/sample_report.md`, `.pptx` | 예시(수치는 가상) |
+| `templates/README.md` | 회사 양식 파일(row·col·bullet) 넣는 법 |
+| `scripts/spec_to_company.py` | 회사 양식 렌더러(기본) |
+| `scripts/spec_to_pptx.py` | 블루 양식 렌더러 · 양식 점검기 · 브리프 추출 |
+| `scripts/merge_slides.py` | 장표 교체 병합 |
+| `koreport/` | koreport 방법론 12편 + 전용 스킬 9개 (하위 스킬 파일명은 `GUIDE.md`) |
+| `index.html`, `assets/sentence-patterns.html` | 웹 도구 「보고서 문장 공식」 (https://iksangyoo-sys.github.io/koreport-skill/) |
 
-패턴·어휘·안내서를 고친 뒤에는 `python scripts/build_patterns.py`를 실행해 `skills/sentence-patterns/SKILL.md`, `skills/report-vocabulary/SKILL.md`, `assets/sentence-patterns.html`을 다시 만듭니다.
+## 원본과 라이선스
+
+- 이 저장소는 예전 koreport-skill을 report-master로 바꾼 것입니다. koreport 방법론은 `koreport/`에 들어 있습니다.
+- PPT Master(T2·T3)는 이 저장소에 포함하지 않습니다. 쓰려면 [hugohe3/ppt-master](https://github.com/hugohe3/ppt-master) v6.9.0(MIT, Copyright (c) 2025-2026 Hugo He)의 `skills/ppt-master`를 `ppt-master/` 폴더로 넣으세요. 내부 `attribution_guard.py`가 `SKILL.md`·`LICENSE` 등을 검사하므로 그 폴더의 파일은 수정하지 마세요. 결합에 필요한 규칙은 모두 바깥(`SKILL.md`, `workflows/`)에 두었습니다.
+
+## 설치 참고
+
+이 폴더째 스킬 폴더(예: `~/.claude/skills/report-master`)에 두면 됩니다. claude.ai에 zip으로 올릴 때는 ZIP 안 파일명을 영문으로 두고 `SKILL.md`는 맨 위 하나만 둡니다(그래서 `koreport/` 하위 스킬 파일은 `GUIDE.md`로 바꿔 두었습니다).
