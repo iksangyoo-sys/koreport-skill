@@ -5,21 +5,22 @@
 한국어 업무 보고서를 **koreport 방법론으로 문안부터 확정**하고, PPT는 **필요한 만큼만** 만드는 결합 스킬입니다.
 
 - 문안(독자 니즈 → 메시지 → 목차·헤드라인 → 본문)은 `report_spec.md` 한 파일로 확정합니다.
-- 기본 장표는 회사 양식(`templates/row.pptx` 가로, `col.pptx` 세로, `bullet.pptx` 도형 견본)으로 만듭니다. 사용자가 요청하지 않아도 적용합니다. **회사 양식 파일은 이 저장소에 포함하지 않으니** 각자 회사 양식을 같은 이름으로 `templates/`에 넣어 쓰세요(`templates/README.md` 참고). `scripts/spec_to_company.py`가 문안을 그대로 렌더링하므로 AI 없이 PC에서 돌려도 됩니다(비용 0원).
-- 고정 블루 양식이 필요하면 `scripts/spec_to_pptx.py`가 한국 기업 1-page 양식(블루 단색, 맑은 고딕, 장 4층 구조, 기호 위계)으로 바로 렌더링합니다. LLM이 장표를 그리지 않으므로 비용이 거의 들지 않습니다.
+- 기본 장표는 회사 양식(`templates/row.pptx` 가로, `col.pptx` 세로, `bullet.pptx` 도형 견본)으로 만듭니다. 사용자가 요청하지 않아도 적용합니다. **회사 양식 파일은 이 저장소에 포함하지 않으니** 각자 회사 양식을 같은 이름으로 `templates/`에 넣어 쓰세요(`templates/README.md` 참고). `scripts/spec_to_onepage.py`(가로)·`spec_to_company.py`(세로)가 문안을 그대로 렌더링하므로 AI 없이 PC에서 돌려도 됩니다(비용 0원).
+- 고정 블루 양식은 사용자가 요청할 때만 씁니다. 필요하면 `scripts/spec_to_pptx.py`가 한국 기업 1-page 양식(블루 단색, 맑은 고딕, 장 4층 구조, 기호 위계)으로 바로 렌더링합니다. LLM이 장표를 그리지 않으므로 비용이 거의 들지 않습니다.
 - 개념도·프로세스·차트처럼 시각화가 메시지를 결정하는 장만 `@ppt-master`로 표시해 PPT Master로 그리고, `scripts/merge_slides.py`로 기본 덱에 끼워 넣습니다.
 
 ## 빠른 사용
 
+"회사 양식에 맞춰 아래 내용을 작성해 줘"라고 하면 스킬이 먼저 **가로(row)/세로(col)**와 **장 수**를 묻고, 답에 맞춰 `templates`의 견본 배치대로 바로 만듭니다.
+
 ```bash
-# 1) 양식 점검
-python scripts/spec_to_pptx.py examples/sample_report.md --check
-# 2) 기본 장표 생성 (T1, 회사 양식)
-python scripts/spec_to_company.py examples/sample_report.md -o out.pptx                 # 가로
-python scripts/spec_to_company.py examples/sample_report.md -o out_col.pptx --layout col  # A4 세로
-#    (블루 양식: python scripts/spec_to_pptx.py examples/sample_report.md -o out_blue.pptx)
-# 3) @ppt-master 장만 PPT Master 브리프로 추출 (T2)
-python scripts/spec_to_pptx.py examples/sample_report.md --extract-visual visual_brief.md
+# 1) 가로 = row.pptx 견본 배치 (묶음 문장·회색선 박스·라벨 바·표·원형 라벨·하단 따옴표)
+python scripts/spec_to_onepage.py templates/onepage_spec_template.md -o out_row.pptx --pages 1
+# 2) 세로 = col.pptx 견본 배치 (A4, 섹션 + 둥근 라벨 행)
+python scripts/spec_to_company.py report_spec.md -o out_col.pptx --layout col
+# 3) 문안 점검 / @ppt-master 장 브리프 추출 (T2)
+python scripts/spec_to_pptx.py report_spec.md --check
+python scripts/spec_to_pptx.py report_spec.md --extract-visual visual_brief.md
 # 4) PPT Master 결과를 기본 덱에 병합
 python scripts/merge_slides.py out.pptx ppt_master_result.pptx --map 4=1 -o final.pptx
 ```
@@ -34,10 +35,11 @@ python scripts/merge_slides.py out.pptx ppt_master_result.pptx --map 4=1 -o fina
 | `workflows/01-report-spec.md` | A단계: koreport로 문안 확정 |
 | `workflows/02-spec-format.md` | `report_spec.md` 문법 |
 | `workflows/03-pptx-output.md` | B단계: 장표 생성, PPT Master 연결, 수정 흐름 |
-| `templates/report_spec_template.md` | 빈 양식 |
-| `examples/sample_report.md`, `.pptx` | 예시(수치는 가상) |
+| `templates/onepage_spec_template.md` | 가로(row) 견본 배치 빈 문안 |
+| `templates/report_spec_template.md` | 여러 장·세로(col) 빈 문안 |
 | `templates/README.md` | 회사 양식 파일(row·col·bullet) 넣는 법 |
-| `scripts/spec_to_company.py` | 회사 양식 렌더러(기본) |
+| `scripts/spec_to_onepage.py` | 가로 회사 양식(row.pptx 견본 배치) 렌더러 — 가로 기본 |
+| `scripts/spec_to_company.py` | 세로 회사 양식(col.pptx) 렌더러 — 세로 기본, row 표지+여러 장 |
 | `scripts/spec_to_pptx.py` | 블루 양식 렌더러 · 양식 점검기 · 브리프 추출 |
 | `scripts/merge_slides.py` | 장표 교체 병합 |
 | `koreport/` | koreport 방법론 12편 + 전용 스킬 9개 (하위 스킬 파일명은 `GUIDE.md`) |
