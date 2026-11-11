@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-report-master — 보고서 문안(report_spec.md)을 1-page 장표 양식 PPTX로 렌더링한다.
+koreport-skill — 보고서 문안(report_spec.md)을 1-page 장표 양식 PPTX로 렌더링한다.
 
 LLM이 SVG를 장마다 직접 그리지 않고, 확정된 문안만 넘기면 이 스크립트가
 결정론적으로 장표를 만든다. 토큰은 문안 작성에만 쓰인다.

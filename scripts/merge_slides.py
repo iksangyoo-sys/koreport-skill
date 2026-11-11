@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-report-master — 기본 장표(spec_to_pptx.py 결과)의 일부 장을 PPT Master로 만든 장표로 바꿔 끼운다.
+koreport-skill — 기본 장표(spec_to_pptx.py 결과)의 일부 장을 PPT Master로 만든 장표로 바꿔 끼운다.
 
 PPT Master는 시각화가 꼭 필요한 장(@ppt-master 표시)만 따로 만들고,
 나머지는 저비용 렌더러 결과를 그대로 쓰기 위한 도구다.

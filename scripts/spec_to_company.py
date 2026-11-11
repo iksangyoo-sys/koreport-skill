@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-report-master — report_spec.md를 회사 양식(templates/row.pptx 가로, col.pptx A4 세로)으로 바로 렌더링한다.
+koreport-skill — report_spec.md를 회사 양식(templates/row.pptx 가로, col.pptx A4 세로)으로 바로 렌더링한다.
 
 AI 없이 PC에서 실행하므로 토큰이 들지 않는다. 문법은 spec_to_pptx.py와 같은
 report_spec.md(workflows/02-spec-format.md)를 그대로 쓴다.

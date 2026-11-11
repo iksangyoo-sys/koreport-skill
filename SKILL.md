@@ -1,9 +1,9 @@
 ---
-name: report-master
+name: koreport-skill
 description: 한국어 업무 보고서를 koreport 방법론(독자 니즈 → 메시지 → 스토리라인 → 헤드라인·묶고–풀기 → 1-page 장표 양식)으로 먼저 기획·문안 확정한 뒤, 필요한 만큼만 PPTX로 만든다. 문안은 report_spec.md 한 파일로 확정하고, 기본 장표는 스크립트가 1-page 양식으로 바로 렌더링하며, 시각화가 꼭 필요한 장만 PPT Master로 그려 끼운다. 보고서를 PPT·장표·슬라이드로 만들어 달라, 보고서 기획부터 PPT까지, 우리 회사 장표 양식으로 PPT, 저비용·빠르게 보고서 PPT를 요청받을 때 사용한다. 문안만 고치는 일은 koreport, 디자인 중심 발표 자료는 PPT Master를 단독으로 쓴다.
 ---
 
-# report-master — 문안은 koreport로, 장표는 필요한 만큼만
+# koreport-skill — 문안은 koreport로, 장표는 필요한 만큼만
 
 보고서 PPT의 품질은 장표 디자인이 아니라 **메시지와 문안**에서 나오고, 비용은 장표를 LLM이 한 장씩 그릴 때 가장 크게 든다. 이 스킬은 두 일을 떼어 놓는다.
 
@@ -11,7 +11,7 @@ description: 한국어 업무 보고서를 koreport 방법론(독자 니즈 → 
 2. **장표 생성 (단계별 선택):** 확정 문안을 스크립트가 1-page 양식으로 렌더링한다(LLM 토큰 거의 0). 시각화가 꼭 필요한 장만 `@ppt-master`로 표시해 PPT Master로 그리고 병합한다.
 
 ```
-report-master/   (claude.ai 업로드용 경량판: ppt-master 사본 제외)
+koreport-skill/   (claude.ai 업로드용 경량판: ppt-master 사본 제외)
 ├── SKILL.md                     ← 지금 이 파일 (전체 흐름)
 ├── workflows/
 │   ├── 01-report-spec.md        ← A단계: koreport로 문안 확정하는 절차

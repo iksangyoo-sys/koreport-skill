@@ -1,4 +1,6 @@
-# report-master
+# koreport-skill
+
+[![skills.sh](https://skills.sh/b/iksangyoo-sys/koreport-skill)](https://skills.sh/iksangyoo-sys/koreport-skill)
 
 한국어 업무 보고서를 **koreport 방법론으로 문안부터 확정**하고, PPT는 **필요한 만큼만** 만드는 결합 스킬입니다.
 
@@ -43,9 +45,9 @@ python scripts/merge_slides.py out.pptx ppt_master_result.pptx --map 4=1 -o fina
 
 ## 원본과 라이선스
 
-- 이 저장소는 예전 koreport-skill을 report-master로 바꾼 것입니다. koreport 방법론은 `koreport/`에 들어 있습니다.
+- koreport 방법론(「AI가 못 쓰는 보고서 쓰기」 교안)은 `koreport/`에 들어 있습니다.
 - PPT Master(T2·T3)는 이 저장소에 포함하지 않습니다. 쓰려면 [hugohe3/ppt-master](https://github.com/hugohe3/ppt-master) v6.9.0(MIT, Copyright (c) 2025-2026 Hugo He)의 `skills/ppt-master`를 `ppt-master/` 폴더로 넣으세요. 내부 `attribution_guard.py`가 `SKILL.md`·`LICENSE` 등을 검사하므로 그 폴더의 파일은 수정하지 마세요. 결합에 필요한 규칙은 모두 바깥(`SKILL.md`, `workflows/`)에 두었습니다.
 
 ## 설치 참고
 
-이 폴더째 스킬 폴더(예: `~/.claude/skills/report-master`)에 두면 됩니다. claude.ai에 zip으로 올릴 때는 ZIP 안 파일명을 영문으로 두고 `SKILL.md`는 맨 위 하나만 둡니다(그래서 `koreport/` 하위 스킬 파일은 `GUIDE.md`로 바꿔 두었습니다).
+`npx skills add iksangyoo-sys/koreport-skill`로 설치하거나, 이 폴더째 스킬 폴더(예: `~/.claude/skills/koreport-skill`)에 두면 됩니다. claude.ai에 zip으로 올릴 때는 ZIP 안 파일명을 영문으로 두고 `SKILL.md`는 맨 위 하나만 둡니다(그래서 `koreport/` 하위 스킬 파일은 `GUIDE.md`로 바꿔 두었습니다).
