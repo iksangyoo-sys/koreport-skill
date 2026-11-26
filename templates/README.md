@@ -1,6 +1,6 @@
 # templates
 
-`onepage_spec_template.md`(가로 견본 배치 문안)와 `report_spec_template.md`(여러 장·세로 문안) 빈 양식만 들어 있습니다.
+`onepage_spec_template.md`(가로 견본 배치 문안), `report_spec_template.md`(여러 장·세로 문안), `notice_spec_template.md`(안내문·공지 문안, `scripts/spec_to_notice.py`용 — 회사 양식 파일 없이도 동작) 빈 양식이 들어 있습니다.
 
 회사 장표 양식 파일은 회사 내부 자료라서 저장소에 올리지 않았습니다. 스킬을 쓰려면 각자의 양식을 아래 이름으로 이 폴더에 넣으세요.
 

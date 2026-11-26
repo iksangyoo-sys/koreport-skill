@@ -27,6 +27,8 @@
 # 가로 = row.pptx 견본 배치(묶음 문장·회색선 박스·라벨 바·표·원형 라벨·하단 따옴표), 장마다 꽉 차게
 python "<RM_DIR>/scripts/spec_to_onepage.py" "<project>/onepage_spec.md" -o "<project>/<제목>.pptx" --pages <장 수>
 # 세로 = col.pptx 견본 배치(배너·제목 아래 '1. 섹션 : 헤드라인' + 둥근 라벨 행)
+# 안내문·공지 = 메시지 박스 + ● 라벨: 값 + 일정표 + ■ 문의 (텍스트 중심, 1장)
+python "<RM_DIR>/scripts/spec_to_notice.py" "<project>/notice_spec.md" -o "<project>/<제목>.pptx"
 python "<RM_DIR>/scripts/spec_to_company.py" "<project>/report_spec.md" -o "<project>/<제목>.pptx" --layout col
 ```
 
@@ -34,6 +36,7 @@ python "<RM_DIR>/scripts/spec_to_company.py" "<project>/report_spec.md" -o "<pro
 - 세로 문법은 `02-spec-format.md` 그대로다. 【라벨】 아래 줄이 '둥근 라벨 + 본문' 행이 되고, `## [새쪽] …`으로 쪽을 나눈다.
 - 표지가 붙은 긴 가로 보고서만 `spec_to_company.py`(row, `## 장`마다 1장)를 쓴다.
 - 구조도·흐름도: `templates/bullet.pptx` 견본 도형을 복사해 쓴다.
+- 안내문·공지는 `spec_to_onepage.py`로 그리지 않는다. 보고서 견본(묶음 박스·라벨 바·원형 라벨)이 들어가 도표 위주가 된다. `spec_to_notice.py`와 `templates/notice_spec_template.md`를 쓴다(문법은 `02-spec-format.md` '안내문 문법').
 
 ### 고정 블루 양식 (사용자가 이름을 대어 요청할 때만)
 

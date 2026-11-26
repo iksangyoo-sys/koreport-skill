@@ -16,6 +16,8 @@
 ```bash
 # 1) 가로 = row.pptx 견본 배치 (묶음 문장·회색선 박스·라벨 바·표·원형 라벨·하단 따옴표)
 python scripts/spec_to_onepage.py templates/onepage_spec_template.md -o out_row.pptx --pages 1
+# 안내문·공지(교육 안내 등): 메시지 한 문장 + ● 라벨: 값 + 일정표 — 회사 양식 없이도 동작
+python scripts/spec_to_notice.py templates/notice_spec_template.md -o out_notice.pptx
 # 2) 세로 = col.pptx 견본 배치 (A4, 섹션 + 둥근 라벨 행)
 python scripts/spec_to_company.py report_spec.md -o out_col.pptx --layout col
 # 3) 문안 점검 / @ppt-master 장 브리프 추출 (T2)
@@ -38,7 +40,8 @@ python scripts/merge_slides.py out.pptx ppt_master_result.pptx --map 4=1 -o fina
 | `templates/onepage_spec_template.md` | 가로(row) 견본 배치 빈 문안 |
 | `templates/report_spec_template.md` | 여러 장·세로(col) 빈 문안 |
 | `templates/README.md` | 회사 양식 파일(row·col·bullet) 넣는 법 |
-| `scripts/spec_to_onepage.py` | 가로 회사 양식(row.pptx 견본 배치) 렌더러 — 가로 기본 |
+| `scripts/spec_to_onepage.py` | 가로 회사 양식(row.pptx 견본 배치) 렌더러 — 가로 기본(보고서) |
+| `scripts/spec_to_notice.py` | 안내문·공지 렌더러 — 텍스트 중심 1-page(메시지 박스·라벨 개조식·일정표·문의) |
 | `scripts/spec_to_company.py` | 세로 회사 양식(col.pptx) 렌더러 — 세로 기본, row 표지+여러 장 |
 | `scripts/spec_to_pptx.py` | 블루 양식 렌더러 · 양식 점검기 · 브리프 추출 |
 | `scripts/merge_slides.py` | 장표 교체 병합 |

@@ -14,6 +14,7 @@ koreport의 여섯 동작(헤아려라·모아라·묶어라·이어라·솎아�
 | 주간업무 | `koreport/skills/weekly-report/GUIDE.md` |
 | 회의결과 | `koreport/skills/meeting-report/GUIDE.md` |
 | 모든 장표형 보고서(양식) | `koreport/skills/onepage-format/GUIDE.md` — **장표로 낼 때는 항상** |
+| 안내문·공지(교육 안내, 일정·준비물) | `koreport/skills/onepage-format/GUIDE.md` 9절 — 헤드라인·묶음 박스 대신 메시지 한 문장 + `● 라벨: 값` + 일정표 1개. 문안은 `templates/notice_spec_template.md` |
 
 - 원자료가 PDF·DOCX·PPTX·웹 페이지라면 `ppt-master/scripts/source_to_md.py`로 Markdown으로 바꿔 읽는다(LLM이 원본을 통째로 읽는 것보다 싸다).
 
